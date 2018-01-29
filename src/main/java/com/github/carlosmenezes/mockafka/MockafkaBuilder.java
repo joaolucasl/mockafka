@@ -75,7 +75,10 @@ public class MockafkaBuilder {
         return withProcessedDriver(driver ->
             range(0, size)
                 .mapToObj(i -> driver.readOutput(topic, keySerde.deserializer(), valueSerde.deserializer()))
-                .map(pr -> new Message<>(pr.key(), pr.value()))
+                .map(pr -> {
+                    if (pr == null) return null;
+                    return new Message<>(pr.key(), pr.value());
+                })
                 .collect(toList())
         );
     }
